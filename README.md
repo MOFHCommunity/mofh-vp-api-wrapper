@@ -1,6 +1,6 @@
-# VPClient
+# mofh-vp-api-wrapper
 
-VPClient is a powerful VistaPanel API client library written in PHP. It empowers developers to build custom control panels and seamlessly interact with VistaPanel, a robust web hosting control panel. With VPClient, you can manage websites, databases, domains, redirects, SSL certificates, and more, all programmatically using the VistaPanel API (Application Programming Interface).
+mofh-vp-api-wrapper is a powerful VistaPanel API client library written in PHP. It empowers developers to build custom control panels and seamlessly interact with VistaPanel, a robust web hosting control panel. With mofh-vp-api-wrapper, you can manage websites, databases, domains, redirects, SSL certificates, and more, all programmatically using the VistaPanel API (Application Programming Interface).
 
 VistaPanel is a web hosting control panel that allows users to manage their websites, databases, and other aspects of their hosting environment. A VistaPanel API client is a program that can interact with VistaPanel using the VistaPanel API (Application Programming Interface). The API provides a set of methods that can be used to manage various aspects of the hosting environment programmatically.
 
@@ -122,17 +122,17 @@ Allows iFastNet to send you notifications about account suspensions, also unlock
 <?php
 require_once 'api-client.php';
 
-$vpClient = new VistapanelApi();
-$vpClient->setCpanelUrl('https://cpanel.example.com');
-$vpClient->login('username', 'password');
+$mofh-vp-api-wrapper = new VistapanelApi();
+$mofh-vp-api-wrapper->setCpanelUrl('https://cpanel.example.com');
+$mofh-vp-api-wrapper->login('username', 'password');
 
-$databases = $vpClient->listDatabases();
+$databases = $mofh-vp-api-wrapper->listDatabases();
 foreach ($databases as $database => $value) {
     echo $database . "\n";
 }
 
-$vpClient->logout();
+$mofh-vp-api-wrapper->logout();
 ?>
 ```
 
-Fork of [VistaPanel PHP API](https://github.com/oddmario/vistapanel-php-api).
+Successor to VPClient/GenerateClient and Fork of [VistaPanel PHP API](https://github.com/oddmario/vistapanel-php-api).
