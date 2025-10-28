@@ -1,138 +1,361 @@
-# mofh-vp-api-wrapper
 
-mofh-vp-api-wrapper is a powerful VistaPanel API client library written in PHP. It empowers developers to build custom control panels and seamlessly interact with VistaPanel, a robust web hosting control panel. With mofh-vp-api-wrapper, you can manage websites, databases, domains, redirects, SSL certificates, and more, all programmatically using the VistaPanel API (Application Programming Interface).
+# 🧩 mofh-vp-api-wrapper
 
-VistaPanel is a web hosting control panel that allows users to manage their websites, databases, and other aspects of their hosting environment. A VistaPanel API client is a program that can interact with VistaPanel using the VistaPanel API (Application Programming Interface). The API provides a set of methods that can be used to manage various aspects of the hosting environment programmatically.
+**mofh-vp-api-wrapper** is a powerful PHP client library designed for **VistaPanel**, the control panel used by MyOwnFreeHost (MOFH) resellers.
+It enables developers to **programmatically manage websites, databases, domains, redirects, SSL certificates**, and more — all through a clean and simple API interface.
 
-# API Documentation
+This library is a **successor to VPClient/GenerateClient** and a **modern fork** of [oddmario/vistapanel-php-api](https://github.com/oddmario/vistapanel-php-api).
 
-The VistaPanel Users API allows you to interact with the VistaPanel hosting control panel using PHP. It provides methods for performing various tasks such as logging in, managing databases, working with domains, creating redirects, uploading SSL certificates, and more.
+---
 
-## Class: VistapanelApi
+## 🚀 Overview
 
-### Properties
+VistaPanel is the control panel used by MOFH-powered hosting accounts.
+The **VistaPanel API** allows automation of hosting management actions such as:
 
-- `cpanelUrl`: The URL of the VistaPanel control panel.
-- `loggedIn`: Indicates whether the user is logged in or not.
-- `vistapanelSession`: The session ID obtained after logging in.
-- `vistapanelSessionName`: The name of the session cookie.
-- `vistapanelToken`: The token used for API requests.
-- `accountUsername`: The username of the logged-in account.
-- `cookie`: The cookie string used for authentication.
+* Logging in and managing sessions
+* Creating and deleting MySQL databases
+* Managing domains, subdomains, and redirects
+* Uploading SSL certificates and keys
+* Integrating with Softaculous
+* Handling notifications and user sessions programmatically
 
-### Methods
+With **mofh-vp-api-wrapper**, you can easily connect to your VistaPanel instance and automate all of the above using simple PHP methods.
 
-#### `setCpanelUrl($url)`
+---
+
+## 🧱 Installation
+
+You can include the library manually or install it via Composer (if supported).
+
+### Manual Installation
+
+1. Download the library files.
+2. Include it in your PHP script:
+
+```php
+require_once 'mofh-vp-api-wrapper.php';
+```
+
+---
+
+## 🧠 Class: `Vistapanel_Api`
+
+This is the main class that manages all VistaPanel API operations.
+
+---
+
+### 🧩 Properties
+
+| Property                  | Type   | Description                                             |
+| ------------------------- | ------ | ------------------------------------------------------- |
+| `cpanel_url`              | string | The base URL of your VistaPanel control panel.          |
+| `logged_in`               | bool   | Indicates whether the session is currently logged in.   |
+| `vistapanel_session`      | string | The session ID obtained after logging in.               |
+| `vistapanel_session_name` | string | The name of the VistaPanel session cookie.              |
+| `vistapanel_token`        | string | The token required for API authentication.              |
+| `account_username`        | string | The username of the currently logged-in account.        |
+| `cookie`                  | string | The full cookie string used for authenticated requests. |
+
+---
+
+## ⚙️ Methods
+
+### 🔹 `set_cpanel_url($url)`
 
 Sets the URL of the VistaPanel control panel.
 
-- `$url` (string): The URL of the control panel.
+**Parameters:**
 
-#### `login($username, $password, $theme)`
+* `$url` *(string)* — The full control panel URL (e.g., `https://cpanel.example.com`)
 
-Logs in to the VistaPanel control panel.
+**Example:**
 
-- `$username` (string): The username of the account.
-- `$password` (string): The password of the account.
-- `$theme` (string): The theme to use after logging in (default: "PaperLantern").
+```php
+$api->set_cpanel_url('https://cpanel.example.com');
+```
 
-#### `createDatabase($dbname)`
+---
 
-Creates a new database.
+### 🔹 `login($username, $password, $theme = 'PaperLantern')`
 
-- `$dbname` (string): The name of the database, without the account prefix.
+Logs into the VistaPanel control panel.
 
-#### `listDatabases()`
+**Parameters:**
 
-Returns an array of databases associated with the logged-in account.
+* `$username` *(string)* — VistaPanel username
+* `$password` *(string)* — VistaPanel password
+* `$theme` *(string)* — The panel theme (default: `'PaperLantern'`)
 
-#### `deleteDatabase($database)`
+**Example:**
 
-Deletes a database.
+```php
+$api->login('user123', 'securepassword', 'PaperLantern');
+```
 
-- `$database` (string): The name of the database, without the account prefix.
+---
 
-#### `getPhpmyadminLink($database)`
+### 🔹 `create_database($dbname)`
 
-Returns the phpMyAdmin link for a specific database.
+Creates a new MySQL database.
 
-- `$database` (string): The name of the database, without the account prefix.
+**Parameters:**
 
-#### `listDomains($option)`
+* `$dbname` *(string)* — The database name (without account prefix)
 
-Returns an array of domains in a specific category.
+**Example:**
 
-- `$option` (string): The category of domains to retrieve. Available options: "all," "addon," "sub," and "parked" (default: "all").
+```php
+$api->create_database('new_db');
+```
 
-#### `createRedirect($domainname, $target)`
+---
 
-Creates a redirect for a domain.
+### 🔹 `list_databases()`
 
-- `$domainname` (string): The name of the domain.
-- `$target` (string): The target URL for the redirect.
+Returns an array of all MySQL databases associated with the logged-in account.
 
-#### `deleteRedirect($domainname)`
+**Example:**
 
-Deletes a redirect for a domain.
+```php
+$databases = $api->list_databases();
+print_r($databases);
+```
 
-- `$domainname` (string): The name of the domain.
+---
 
-#### `uploadKey($domainname, $key, $csr)`
+### 🔹 `delete_database($database)`
 
-Uploads an SSL key for a domain.
+Deletes a specific MySQL database.
 
-- `$domainname` (string): The name of the domain.
-- `$key` (string): The content of the SSL key file.
-- `$csr` (string): The content of the Certificate Signing Request (CSR) file.
+**Parameters:**
 
-#### `uploadCert($domainname, $cert)`
+* `$database` *(string)* — Database name (without prefix)
+
+**Example:**
+
+```php
+$api->delete_database('old_db');
+```
+
+---
+
+### 🔹 `get_phpmyadmin_link($database)`
+
+Retrieves the phpMyAdmin login link for a specific database.
+
+**Parameters:**
+
+* `$database` *(string)* — Database name (without prefix)
+
+**Example:**
+
+```php
+$link = $api->get_phpmyadmin_link('example_db');
+echo $link;
+```
+
+---
+
+### 🔹 `list_domains($option = 'all')`
+
+Lists all domains associated with the account.
+
+**Parameters:**
+
+* `$option` *(string)* — The domain type: `'all'`, `'addon'`, `'sub'`, or `'parked'` (default: `'all'`)
+
+**Example:**
+
+```php
+$domains = $api->list_domains('addon');
+print_r($domains);
+```
+
+---
+
+### 🔹 `create_redirect($domainname, $target)`
+
+Creates a redirect from one domain to another.
+
+**Parameters:**
+
+* `$domainname` *(string)* — Source domain name
+* `$target` *(string)* — Destination URL
+
+**Example:**
+
+```php
+$api->create_redirect('example.com', 'https://newsite.com');
+```
+
+---
+
+### 🔹 `delete_redirect($domainname)`
+
+Removes an existing redirect.
+
+**Parameters:**
+
+* `$domainname` *(string)* — Domain name whose redirect should be deleted
+
+**Example:**
+
+```php
+$api->delete_redirect('example.com');
+```
+
+---
+
+### 🔹 `upload_key($domainname, $key, $csr)`
+
+Uploads a private key and CSR for SSL installation.
+
+**Parameters:**
+
+* `$domainname` *(string)* — Target domain
+* `$key` *(string)* — SSL key content
+* `$csr` *(string)* — Certificate Signing Request content
+
+**Example:**
+
+```php
+$api->upload_key('example.com', $ssl_key, $csr_data);
+```
+
+---
+
+### 🔹 `upload_cert($domainname, $cert)`
 
 Uploads an SSL certificate for a domain.
 
-- `$domainname` (string): The name of the domain.
-- `$cert` (string): The content of the SSL certificate file.
+**Parameters:**
 
-#### `getSSLPrivateKey($domain)`
+* `$domainname` *(string)* — Target domain
+* `$cert` *(string)* — SSL certificate content
 
-Get the currently installed SSL key for a domain.
+**Example:**
 
-- `$domain` (string): The name of the domain.
+```php
+$api->upload_cert('example.com', $certificate);
+```
 
-#### `getSSLCertificate($domain)`
+---
 
-Get the currently installed SSL certificate for a domain.
+### 🔹 `get_ssl_private_key($domain)`
 
-- `$domain` (string): The name of the domain.
+Retrieves the currently installed SSL private key.
 
-#### `getSoftaculousLink()`
+**Parameters:**
 
-Returns the Softaculous link for the control panel.
+* `$domain` *(string)* — Domain name
 
-#### `logout()`
+**Example:**
 
-Logs out from the control panel, and resets client configuration.
+```php
+$key = $api->get_ssl_private_key('example.com');
+```
 
-#### `approveNotification()`
+---
 
-Allows iFastNet to send you notifications about account suspensions, also unlocks the control panel.
+### 🔹 `get_ssl_certificate($domain)`
 
-## Example Usage
+Retrieves the installed SSL certificate.
+
+**Parameters:**
+
+* `$domain` *(string)* — Domain name
+
+**Example:**
+
+```php
+$cert = $api->get_ssl_certificate('example.com');
+```
+
+---
+
+### 🔹 `get_softaculous_link()`
+
+Returns the Softaculous (auto-installer) URL.
+
+**Example:**
+
+```php
+$link = $api->get_softaculous_link();
+echo $link;
+```
+
+---
+
+### 🔹 `logout()`
+
+Logs out of VistaPanel and resets all client configuration.
+
+**Example:**
+
+```php
+$api->logout();
+```
+
+---
+
+### 🔹 `approve_notification()`
+
+Allows iFastNet to send suspension and alert notifications to the control panel.
+Also unlocks the control panel if locked.
+
+**Example:**
+
+```php
+$api->approve_notification();
+```
+
+---
+
+## 💻 Example Usage
 
 ```php
 <?php
-require_once 'api-client.php';
+require_once 'mofh-vp-api-wrapper.php';
 
-$mofh-vp-api-wrapper = new VistapanelApi();
-$mofh-vp-api-wrapper->setCpanelUrl('https://cpanel.example.com');
-$mofh-vp-api-wrapper->login('username', 'password');
+$api = new Vistapanel_Api();
+$api->set_cpanel_url('https://cpanel.example.com');
+$api->login('username', 'password');
 
-$databases = $mofh-vp-api-wrapper->listDatabases();
-foreach ($databases as $database => $value) {
-    echo $database . "\n";
+// List all databases
+$databases = $api->list_databases();
+foreach ($databases as $db) {
+    echo $db . PHP_EOL;
 }
 
-$mofh-vp-api-wrapper->logout();
+// Create a new redirect
+$api->create_redirect('example.com', 'https://redirectedsite.com');
+
+// Log out when done
+$api->logout();
 ?>
 ```
 
-Successor to VPClient/GenerateClient and Fork of [VistaPanel PHP API](https://github.com/oddmario/vistapanel-php-api).
+---
+
+## 🧩 Related Projects
+
+* [mofh-javascript](https://github.com/MOFHCommunity/mofh-javascript) — Customize VistaPanel with JavaScript
+* [oddmario/vistapanel-php-api](https://github.com/oddmario/vistapanel-php-api) — Original PHP API library
+
+---
+
+## ⚖️ License
+
+This project is licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Contributors
+
+* [SpookyKipper](https://github.com/SpookyKipper)
+* [Deveroonie](https://github.com/Deveroonie)
+* [MOFH Community](https://github.com/MOFHCommunity)
+
+
